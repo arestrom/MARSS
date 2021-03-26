@@ -22,7 +22,9 @@ will also place an icon on the users desktop for launching. The
 application comes bundled with a portable version of R and includes all
 package dependencies. No separate install of R is needed. This also
 means that the application should continue to work well into the future,
-even as the underlying technology and web of dependencies change.
+even as the underlying technology and web of dependencies change. For
+details on how to package up a standalone installer for shiny
+applicatons see: <https://github.com/arestrom/refreeze>
 
 ## Start and stop the application
 
@@ -45,13 +47,14 @@ or `modified_by` fields anytime new entries, updates, or edits are
 committed.
 
 The first time you use the application you will be automatically routed
-to the login screen to enter your credentials and required connection
-information. Afterwards you will only see the login screen if changes
-are made to the server, or your password lapses. If that happens please
-contact the database administrator to verify your password is current,
-and that you have entered the correct values for the server host and
-port. Database connection credentials are secured as encryted values in
-the Windows Credential store.
+to an entry form to enable storing your database credentials and
+required connection information. Afterwards you will only see the
+credentials screen if changes are made to the server, or your password
+lapses. If that happens please contact the database administrator to
+verify that your password is current, and that you have entered the
+correct values for the server host and port. Database connection
+credentials are secured as encryted values in the Windows Credential
+Manager.
 
 ### In case of a crash
 

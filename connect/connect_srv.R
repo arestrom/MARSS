@@ -60,6 +60,3 @@ observeEvent(input$test_connection, {
     )
   }
 }, priority = -1)
-
-# msg = paste("<font color=#1d3f87>Corrected Form (Yes/No)? --- </font><b>", arv, "</b>", sep = "")
-# HTML(paste("<left><h4>", msg,"</h4></left>"))
