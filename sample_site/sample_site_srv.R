@@ -174,6 +174,7 @@ output$sample_site_map <- renderLeaflet({
                                      weight = 2,
                                      fillOpacity = 0.5),
                                    editOptions = editToolbarOptions(
+                                     remove = FALSE,
                                      selectedPathOptions = selectedPathOptions()),
                                    singleFeature = TRUE)
   # Test if reach_coords has data ==========================
@@ -405,11 +406,17 @@ observeEvent(input$sample_site_add, {
 # Reactive to hold values actually inserted
 sample_site_insert_vals = reactive({
   new_sample_site_values = sample_site_create() %>%
-    mutate(active_date = with_tz(active_date, tzone = "UTC")) %>%
-    mutate(inactive_date = with_tz(inactive_date, tzone = "UTC")) %>%
+    mutate(active_datetime = if_else(!is.na(active_date),
+                                     with_tz(as.POSIXct(format(active_date),
+                                                        tz = "America/Los_Angeles"), tzone = "UTC"),
+                                     active_date)) %>%
+    mutate(inactive_datetime = if_else(!is.na(inactive_date),
+                                       with_tz(as.POSIXct(format(inactive_date),
+                                                          tz = "America/Los_Angeles"), tzone = "UTC"),
+                                       inactive_date)) %>%
     select(location_name, location_code, latitude,
-           longitude, active, active_date,
-           inactive_date, inactive_reason,
+           longitude, active, active_datetime,
+           inactive_datetime, inactive_reason,
            location_description, location_comment,
            created_by)
   return(new_sample_site_values)
@@ -463,10 +470,12 @@ sample_site_edit = reactive({
     mutate(active = if_else(is.na(active) | active == "",
                             "No", active)) %>%
     mutate(active_datetime = if_else(!is.na(active_date),
-                                     with_tz(as.POSIXct(format(active_date), tz = "America/Los_Angeles"), tzone = "UTC"),
+                                     with_tz(as.POSIXct(format(active_date),
+                                                        tz = "America/Los_Angeles"), tzone = "UTC"),
                                      active_date)) %>%
     mutate(inactive_datetime = if_else(!is.na(inactive_date),
-                                     with_tz(as.POSIXct(format(inactive_date), tz = "America/Los_Angeles"), tzone = "UTC"),
+                                     with_tz(as.POSIXct(format(inactive_date),
+                                                        tz = "America/Los_Angeles"), tzone = "UTC"),
                                      inactive_date)) %>%
     mutate(inactive_reason = trimws(inactive_reason)) %>%
     mutate(inactive_reason = if_else(is.na(inactive_reason) | inactive_reason == "",
