@@ -60,7 +60,7 @@ Manager.
 
 If after installing the application, it crashes, or fails to load,
 navigate to the `out.txt` folder in the App directory:
-`C:\Documents\Apps\MARSS\out.txt`. The `out.txt` file will log the first
+`C:\Documents\Apps\MarSS\out.txt`. The `out.txt` file will log the first
 fatal error encountered. Please include this information when reporting
 the error.
 

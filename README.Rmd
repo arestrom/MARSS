@@ -35,6 +35,6 @@ The first time you use the application you will be automatically routed to an en
 
 ### In case of a crash 
 
-If after installing the application, it crashes, or fails to load, navigate to the `out.txt` folder in the App directory: `C:\Documents\Apps\MARSS\out.txt`. The `out.txt` file will log the first fatal error encountered. Please include this information when reporting the error.
+If after installing the application, it crashes, or fails to load, navigate to the `out.txt` folder in the App directory: `C:\Documents\Apps\MarSS\out.txt`. The `out.txt` file will log the first fatal error encountered. Please include this information when reporting the error.
 
 After a crash you may also need to kill any active `R` processes using Windows Task Manager. Click `Ctrl-Alt-Delete` to open Task Manager. Then in the `Processes` tab, look for any processes named `R for Windows front-end` or `R for Windows terminal front-end`. You can right-click on these and select `End task` to terminate the process. 
