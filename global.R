@@ -133,6 +133,15 @@ if ( valid_connection == TRUE ) {
                       password = get_credentials("pg_pwd_prod"))
 }
 
+# Define close function =============================================================
+
+# Function to close pool
+if ( valid_connection == TRUE ) {
+  onStop(function() {
+    poolClose(pool)
+  })
+}
+
 
 
 
