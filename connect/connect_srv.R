@@ -17,14 +17,25 @@ observeEvent(input$test_connection, {
   if (con_valid == TRUE ) {
     connection_check$con_check = TRUE
   } else {
-    test_failed_reason = attr(con_valid, "reason")
-    test_msg  = glue("Reason: {test_failed_reason}. Please try again, or contact ",
-                     "the database administrator to obtain the current values.")
-    shinytoastr::toastr_error(title = "Test failed.",
-                              closeButton = TRUE,
-                              position = "top-center",
-                              timeOut = 0,
-                              message = test_msg)
+    test_failed_reason = trimws(attr(con_valid, "reason"))
+    showModal(
+      tags$div(id = "test_failed_modal",
+               modalDialog (
+                 size = "m",
+                 title = "Test failed",
+                 withTags({
+                   div(class="header", checked = NA,
+                       p(glue("Please try again, or contact the database administrator ",
+                              "to obtain the current connection parameters.")),
+                       HTML("<font color=#660033><strong>Error message:</strong><font color=#000080>"),
+                       p(test_failed_reason)
+                   )
+                 }),
+                 easyClose = TRUE,
+                 footer = NULL
+               )
+      )
+    )
     updateTextInput(session, "password", value = "")
     updateTextInput(session, "database_host", value = "")
     connection_check$con_check = FALSE
@@ -45,12 +56,12 @@ observeEvent(input$test_connection, {
                  size = "m",
                  title = "Success!",
                  withTags({
-                   div(class="header", checked=NA,
+                   div(class="header", checked = NA,
                        p(glue("Your connection parameters have been encrypted ",
                               "and written to the Windows Credential Manager.")),
                        HTML("<font color=#1d3f87><strong>IMPORTANT!</strong>"),
-                       p(glue("Please close the application. Then restart for ",
-                              "the new credentials to take effect!"))
+                       p(glue("Please close and restart the application to ",
+                              "enable the connection!"))
                    )
                  }),
                  easyClose = TRUE,

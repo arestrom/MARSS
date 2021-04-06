@@ -19,22 +19,23 @@ server = function(input, output, session) {
     showModal(
       tags$div(id = "no_credentials_modal",
                modalDialog (
-                 size = "l",
-                 title = "No database connection!",
+                 size = "m",
+                 title = "Connect to the database",
                  withTags({
-                   div(class="header", checked=NA,
-                       p(glue("If this is the first time running the application ",
+                   div(class="header", checked = NA,
+                       p(glue("If this is your first time running the application ",
                               "you will need to enter your connection parameters ",
-                              "below to store the values.")),
+                              "below to enable storing the values. This only needs ",
+                              "to be done once.")),
+                       p(glue("You also need to be connected to the WDFW network to ",
+                              "enable connecting to the database.")),
                        HTML("<font color=#660033><strong>IMPORTANT!</strong><font color=#000080>"),
-                       p(glue("The connection failed due to: '{failed_reason}'. ",
-                              "Please enter your database credentials below. This ",
-                              "should only need to be done once unless your ",
-                              "password lapses, or there are changes to the ",
-                              "server. If you are still unable to connect after ",
-                              "attempting to set the parameters please contact ",
-                              "the database administrator to verify your credentials. ",
-                              "Click anywhere outside this box to close the popup."))
+                       p(glue("If you are still unable to connect after updating ",
+                              "your connection parameters, please contact the database ",
+                              "administrator to verify your credentials.")),
+                       p(glue("Click anywhere outside this box to close the popup.")),
+                       HTML("<font color=#660033><strong>Error message:</strong><font color=#000080>"),
+                       p(failed_reason)
                    )
                  }),
                  easyClose = TRUE,
