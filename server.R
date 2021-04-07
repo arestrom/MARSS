@@ -10,6 +10,7 @@ server = function(input, output, session) {
   source("fish_encounter/fish_encounter_srv.R", local = TRUE)
   source("individual_fish/individual_fish_srv.R", local = TRUE)
   source("sample_site/sample_site_srv.R", local = TRUE)
+  source("sampler/sampler_srv.R", local = TRUE)
   source("connect/connect_srv.R", local = TRUE)
 
   # Go to connect tab if pool is invalid

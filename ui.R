@@ -94,8 +94,7 @@ ui = dashboardPagePlus(
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  #sampler_ui,
-                  "some text",
+                  sampler_ui,
                   width = 12
                 )
               )

@@ -83,6 +83,8 @@ source("individual_fish/individual_fish_ui.R")
 source("individual_fish/individual_fish_global.R")
 source("sample_site/sample_site_ui.R")
 source("sample_site/sample_site_global.R")
+source("sampler/sampler_ui.R")
+#source("sampler/sampler_global.R")
 source("connect/connect_ui.R")
 source("connect/connect_global.R")
 
