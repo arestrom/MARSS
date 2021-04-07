@@ -16,11 +16,10 @@ sampler_ui = tags$div(
            br(),
            textInput(inputId = "first_name_input", label = "first_name", width = "200px"),
            textInput(inputId = "last_name_input", label = "last_name", width = "200px"),
-           uiOutput("active_sampler_select", inline = TRUE),
+           uiOutput("all_sampler_select", inline = TRUE),
            br(),
            br(),
-           br()#,
-           #DT::DTOutput("samplers")
-           )
+           br(),
+           DT::DTOutput("samplers"))
   )
 )

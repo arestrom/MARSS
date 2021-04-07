@@ -1,11 +1,11 @@
 
-# output$active_sampler_select = renderUI({
-#   selectizeInput("active_sampler_select",
-#                  label = "Active?",
-#                  choices = c("Yes", "No"),
-#                  selected = "Yes",
-#                  width = "100px")
-# })
+output$all_sampler_select = renderUI({
+  selectizeInput("all_sampler_select",
+                 label = "Active?",
+                 choices = c("Yes", "No"),
+                 selected = "Yes",
+                 width = "100px")
+})
 
 # # Primary DT datatable for samplers
 # output$samplers = renderDT({
