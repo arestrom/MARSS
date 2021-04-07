@@ -6,7 +6,8 @@ get_samplers = function(pool) {
              "active_indicator, created_datetime, created_by, ",
              "modified_datetime, modified_by ",
              "from sampler")
-  samplers = DBI::dbGetQuery(pool, qry) %>%
+  con = poolCheckout(pool)
+  samplers = DBI::dbGetQuery(con, qry) %>%
     mutate(active = if_else(active_indicator == TRUE, "Yes", "No")) %>%
     mutate(created_date = as.POSIXct(created_datetime, tz = "America/Los_Angeles")) %>%
     mutate(created_dt = format(created_date, "%m/%d/%Y %H:%M")) %>%
@@ -15,5 +16,6 @@ get_samplers = function(pool) {
     select(sampler_id, first_name, last_name, full_name, active, created_date,
            created_dt, created_by, modified_date, modified_dt, modified_by) %>%
     arrange(last_name, first_name)
+  poolReturn(con)
   return(samplers)
 }
