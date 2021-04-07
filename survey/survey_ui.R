@@ -20,7 +20,7 @@ survey_ui = tags$div(
   timeInput(inputId = "start_time_select", "start_time", seconds = FALSE),
   timeInput(inputId = "end_time_select", "end_time", seconds = FALSE),
   uiOutput("survey_design_select", inline = TRUE),
-  uiOutput("active_sampler_select", inline = TRUE),
+  uiOutput("any_effort_select", inline = TRUE),
   textAreaInput(inputId = "survey_comment_input", label = "survey_comment", value = "",
                 width = "300px", resize = "both"),
   br(),
