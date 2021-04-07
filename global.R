@@ -85,6 +85,7 @@ source("sample_site/sample_site_ui.R")
 source("sample_site/sample_site_global.R")
 source("sampler/sampler_ui.R")
 source("sampler/sampler_global.R")
+source("data_query/data_query_ui.R")
 source("connect/connect_ui.R")
 source("connect/connect_global.R")
 

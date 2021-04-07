@@ -104,13 +104,12 @@ ui = dashboardPagePlus(
                 br(),
                 br(),
                 boxPlus(
-                  title = "Export data using interactive query generator (ToDo)",
+                  title = "Locate surveys",
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  #data_query_ui,
-                  "some text",
+                  data_query_ui,
                   width = 12
                 )
               )
