@@ -1,0 +1,20 @@
+---
+title: "credits"
+author: "Are Strom"
+date: "April 7, 2021"
+output: html_document
+---  
+
+### Credits 
+
+*MarSS* was developed at the Washington Dept of Fish and Wildlife (WDFW). Source code is available at: https://github.com/arestrom/MarSS
+
+*Are Strom (2021) Biological Data Systems, WDFW*
+
+The application was built using the [R](https://www.r-project.org/) programming language  
+
+*R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.*
+
+The user interface is made possible by the [Shiny](https://shiny.rstudio.com/) R package from RStudio
+
+*Winston Chang, Joe Cheng, JJ Allaire, Yihui Xie and Jonathan McPherson (2021). shiny: Web Application Framework for R. R package version 1.6.0.*  
