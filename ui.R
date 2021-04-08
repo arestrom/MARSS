@@ -99,7 +99,7 @@ ui = dashboardPagePlus(
                 )
               )
       ),
-      tabItem(tabName = "data_query",
+      tabItem(tabName = "survey_query",
               fluidRow(
                 br(),
                 br(),
@@ -109,7 +109,7 @@ ui = dashboardPagePlus(
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  data_query_ui,
+                  survey_query_ui,
                   width = 12
                 )
               )

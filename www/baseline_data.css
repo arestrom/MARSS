@@ -82,6 +82,10 @@
   font-size: 11px;
 }
 
+.btn-default {              /* keep: Sets background color inside pickerInput to white */
+  background-color: #ffffff;
+}
+
 .dropdown-menu {            /* keep: Sets selections in dropdown list to 11px. May want to try em */
   font-size: 11px;
 }

@@ -12,7 +12,7 @@ dash_leftsidebar = dashboardSidebar(
     menuItem("Add or edit data", tabName = "data_edits", icon = icon("database")),
     menuItem("Edit creel site", tabName = "sample_site", icon = icon("map-pin")),
     menuItem("Sampler info", tabName = "sampler_info", icon = icon("user")),
-    menuItem("Data query", tabName = "data_query", icon = icon("share-square")),
+    menuItem("Survey query", tabName = "survey_query", icon = icon("share-square")),
     menuItem("Connect", tabName = "connect", icon = icon("user-lock")),
     menuItem("About", tabName = "about", icon = icon("info-circle"))
   )

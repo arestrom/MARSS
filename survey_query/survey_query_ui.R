@@ -3,7 +3,7 @@
 #========================================================
 
 # Define the survey data content
-data_query_ui = tags$div(
+survey_query_ui = tags$div(
   fluidRow(
     column(width = 12,
            br(),

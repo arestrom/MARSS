@@ -2,20 +2,26 @@
 # All sites select
 output$all_sites_select = renderUI({
   req(valid_connection == TRUE)
-  survey_site_list = get_all_sites(pool)$survey_site
-  pickerInput("survey_site_select", label = "Survey site",
-              multiple = TRUE, choices = survey_site_list,
-              selected = NULL, width = "325px",
+  survey_site_list = get_survey_sites(pool)$survey_site
+  pickerInput("all_sites_select",
+              label = "Survey site",
+              multiple = TRUE,
+              choices = survey_site_list,
+              selected = survey_site_list[1],
+              width = "325px",
               options = pickerOptions(actionsBox = TRUE))
 })
 
 # All sampler select
 output$all_samplers_select = renderUI({
   req(valid_connection == TRUE)
-  sampler_list = get_samplers(pool)$sampler_name
-  pickerInput("sampler_select", label = "Sampler name",
-              multiple = TRUE, choices = sampler_list,
-              selected = NULL, width = "225px",
+  survey_sampler_list = get_survey_samplers(pool)$sampler_name
+  pickerInput("all_samplers_select",
+              label = "Sampler name",
+              multiple = TRUE,
+              choices = survey_sampler_list,
+              selected = survey_sampler_list[1],
+              width = "225px",
               options = pickerOptions(actionsBox = TRUE))
 })
 

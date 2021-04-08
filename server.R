@@ -11,7 +11,7 @@ server = function(input, output, session) {
   source("individual_fish/individual_fish_srv.R", local = TRUE)
   source("sample_site/sample_site_srv.R", local = TRUE)
   source("sampler/sampler_srv.R", local = TRUE)
-  source("data_query/data_query_srv.R", local = TRUE)
+  source("survey_query/survey_query_srv.R", local = TRUE)
   source("connect/connect_srv.R", local = TRUE)
 
   # Go to connect tab if pool is invalid

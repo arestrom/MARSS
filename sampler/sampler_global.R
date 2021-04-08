@@ -1,6 +1,6 @@
 
 # Get sampler names currently in the database
-get_samplers = function(pool) {
+get_sampler_info = function(pool) {
   qry = glue("select sampler_id, first_name, last_name, ",
              "first_name || ' ' || last_name as full_name, ",
              "active_indicator, created_datetime, created_by, ",

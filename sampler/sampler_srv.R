@@ -12,7 +12,7 @@ output$active_sampler_select = renderUI({
 output$samplers = renderDT({
   req(valid_connection == TRUE)
   sampler_title = glue("All samplers currently listed in the database")
-  sampler_data = get_samplers(pool) %>%
+  sampler_data = get_sampler_info(pool) %>%
     select(first_name, last_name, active, created_dt, created_by,
            modified_dt, modified_by)
 
@@ -45,7 +45,7 @@ samplers_dt_proxy = dataTableProxy(outputId = "samplers")
 selected_sampler_data = reactive({
   req(input$tabs == "sampler_info")
   req(input$samplers_rows_selected)
-  samplers_data = get_samplers(pool)
+  samplers_data = get_sampler_info(pool)
   samplers_row = input$samplers_rows_selected
   selected_sampler = tibble(sampler_id = samplers_data$sampler_id[samplers_row],
                             first_name = samplers_data$first_name[samplers_row],
@@ -102,7 +102,7 @@ output$sampler_modal_insert_vals = renderDT({
 # Modal for new sampler
 observeEvent(input$sampler_add, {
   new_sampler_vals = sampler_create()
-  existing_samplers = get_samplers(pool) %>%
+  existing_samplers = get_sampler_info(pool) %>%
     select(full_name)
   showModal(
     # Verify all fields have data...non can not be blank
@@ -163,7 +163,7 @@ observeEvent(input$insert_sampler, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  post_sampler_insert_vals = get_samplers(pool) %>%
+  post_sampler_insert_vals = get_sampler_info(pool) %>%
     select(first_name, last_name, active, created_dt, created_by,
            modified_dt, modified_by)
   replaceData(samplers_dt_proxy, post_sampler_insert_vals)
@@ -256,7 +256,7 @@ observeEvent(input$edit_sampler, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  post_sampler_edit_vals = get_samplers(pool) %>%
+  post_sampler_edit_vals = get_sampler_info(pool) %>%
     select(first_name, last_name, active, created_dt, created_by,
            modified_dt, modified_by)
   replaceData(samplers_dt_proxy, post_sampler_edit_vals)
@@ -269,7 +269,7 @@ observeEvent(input$edit_sampler, {
 # Generate values to show in modal
 output$sampler_modal_delete_vals = renderDT({
   sampler_modal_del_id = selected_sampler_data()$sampler_id
-  sampler_modal_del_vals = get_samplers(pool) %>%
+  sampler_modal_del_vals = get_sampler_info(pool) %>%
     filter(sampler_id == sampler_modal_del_id) %>%
     select(first_name, last_name, active)
   # Generate table
@@ -340,7 +340,7 @@ observeEvent(input$delete_sampler, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  post_sampler_delete_vals = get_samplers(pool) %>%
+  post_sampler_delete_vals = get_sampler_info(pool) %>%
     select(first_name, last_name, active, created_dt, created_by,
            modified_dt, modified_by)
   replaceData(samplers_dt_proxy, post_sampler_delete_vals)
