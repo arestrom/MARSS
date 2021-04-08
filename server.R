@@ -4,7 +4,7 @@
 
 # Create the Shiny server
 server = function(input, output, session) {
-  source("crc_site/crc_site_srv.R", local = TRUE)
+  source("when_where/when_where_srv.R", local = TRUE)
   source("survey/survey_srv.R", local = TRUE)
   source("survey_event/survey_event_srv.R", local = TRUE)
   source("fish_encounter/fish_encounter_srv.R", local = TRUE)

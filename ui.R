@@ -7,7 +7,7 @@ ui = dashboardPagePlus(
   body = dashboardBody(
     includeCSS("www/baseline_data.css"),
     tabItems(
-      tabItem(tabName = "crc_site",
+      tabItem(tabName = "when_where",
               fluidRow(
                 br(),
                 br(),
@@ -21,7 +21,7 @@ ui = dashboardPagePlus(
                   enable_sidebar = TRUE,
                   sidebar_width = 25,
                   sidebar_start_open = TRUE,
-                  sidebar_content = crc_site_ui,
+                  sidebar_content = when_where_ui,
                   leafletOutput("site_map", height = "800px") %>%
                     shinycssloaders::withSpinner(., size = 0.5)
                 )

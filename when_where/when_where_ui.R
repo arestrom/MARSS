@@ -3,7 +3,7 @@
 #========================================================
 
 # Define the survey data content
-crc_site_ui = tags$div(
+when_where_ui = tags$div(
   div(id = "rockfish_image", img(src = "copper_rockfish.png", width = "100%")),
   br(),
   br(),

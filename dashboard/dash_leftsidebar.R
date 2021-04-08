@@ -8,7 +8,7 @@ dash_leftsidebar = dashboardSidebar(
   div(textOutput("Welcome"), style = "padding: 20px"),
   sidebarMenu(
     id = "tabs",
-    menuItem("When and where", tabName = "crc_site", icon = icon("globe")),
+    menuItem("When and where", tabName = "when_where", icon = icon("globe")),
     menuItem("Add or edit data", tabName = "data_edits", icon = icon("database")),
     menuItem("Edit creel site", tabName = "sample_site", icon = icon("map-pin")),
     menuItem("Sampler info", tabName = "sampler_info", icon = icon("user")),
