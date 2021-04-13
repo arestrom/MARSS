@@ -31,43 +31,72 @@ output$any_effort_select = renderUI({
                  width = "100px")
 })
 
+# Get all creel sites in selected catch areas for selected years
+when_where_surveys = reactive({
+  req(site_sampler_info())
+  req(site_sampler_dates())
+  req(input$site_sampler_date_select)
+  input_site_codes = substr(input$site_select, 1, 4)
+  input_sampler_names = input$site_sampler_select
+  input_code_dates = input$site_sampler_date_select
+  filtered_survey_list = site_sampler_dates() %>%
+    filter(site_code %in% input_site_codes) %>%
+    filter(sampler_name %in% input_sampler_names) %>%
+    filter(code_date %in% input_code_dates) %>%
+    arrange(creel_site, as.Date(survey_date), sampler_name)
+  print(filtered_survey_list)
+  return(filtered_survey_list)
+})
+
 # Pull out site_ids as a text string
 site_ids = reactive({
-  req(input$site_select)
-  site_input = input$site_select
-    if (site_input[[1]] == "" ) {
-      loc_id = get_uuid(1L)
-    } else {
-      site_vals = get_all_sites(pool)
-      loc_id = site_vals %>%
-        filter(survey_site %in% site_input) %>%
-        pull(location_id)
-    }
+  req(when_where_surveys())
+  site_input = when_where_surveys()$location_id
+  if (site_input[[1]] == "" ) {
+    loc_id = get_uuid(1L)
+  } else {
+    loc_id = when_where_surveys()$location_id
+  }
   loc_ids = paste0(paste0("'", loc_id, "'"), collapse = ", ")
   return(loc_ids)
 })
 
 # Pull out site_ids as a text string
 site_dates = reactive({
-  req(input$date_select)
-  date_input = input$date_select
+  req(when_where_surveys())
+  date_input = when_where_surveys()$survey_date
   if (date_input[[1]] == "" ) {
     date_vals = "1850-01-01"
   } else {
-    date_vals = input$date_select
-    date_vals = format(as.Date(substr(date_vals, 1, 10), format = "%m/%d/%Y"))
+    date_vals = when_where_surveys()$survey_date
   }
   site_dt = paste0(paste0("'", date_vals, "'"), collapse = ", ")
   return(site_dt)
 })
 
+# Pull out site_ids as a text string
+sampler_ids = reactive({
+  req(when_where_surveys())
+  sampler_input = when_where_surveys()$sampler_id
+  if (sampler_input[[1]] == "" ) {
+    samp_id = get_uuid(1L)
+  } else {
+    samp_id = when_where_surveys()$sampler_id
+  }
+  samp_ids = paste0(paste0("'", samp_id, "'"), collapse = ", ")
+  return(samp_ids)
+})
+
+
+# STOPPED HERE !!!!!!!!!!!!!!!!!!!!!!!!! Add sampler info below......
+
+
+
 # Primary DT datatable for database
 output$surveys = renderDT({
-  req(input$site_select)
-  req(input$date_select)
-  sites = paste0(input$site_select, collapse = ", ")
-  dates = substr(input$date_select, 1, 10)
-  dates = paste0(dates, collapse = ", ")
+  req(when_where_surveys())
+  sites = paste0(unique(when_where_surveys()$creel_site), collapse = ", ")
+  dates = paste0(unique(when_where_surveys()$survey_date_dt), collapse = ", ")
   survey_title = glue("Surveys for {sites} on {dates}")
   survey_data = get_surveys(pool, site_ids(), site_dates()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%

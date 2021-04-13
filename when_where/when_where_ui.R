@@ -19,6 +19,7 @@ when_where_ui = tags$div(
   br(),
   uiOutput("site_select"),
   br(),
+  uiOutput("site_sampler_select"),
   br(),
-  uiOutput("date_select")
+  uiOutput("site_sampler_date_select")
 )

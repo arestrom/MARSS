@@ -1,13 +1,20 @@
 
-# Get all creel sites for selected years and catch areas. All sites must have coordinates !!!!
-get_creel_sites = function(pool, start_date, end_date) {
+# Get all creel sites for selected years and catch areas
+get_site_sampler_info = function(pool, start_date, end_date) {
   qry = glue("select distinct s.location_id, loc.location_code as site_code, ",
-             "loc.location_name, ",
-             "loc.location_code || ': ' || loc.location_name as creel_site ",
+             "loc.location_name, s.survey_id, smp.sampler_id, smp.first_name, ",
+             "smp.last_name, smp.first_name || ' ' || smp.last_name as sampler_name, ",
+             "loc.location_code || ': ' || loc.location_name as creel_site, ",
+             "s.survey_datetime as survey_date, ",
+             "st_x(st_transform(lc.geom::geometry, 4326)) as longitude, ",
+             "st_y(st_transform(lc.geom::geometry, 4326)) as latitude ",
              "from survey as s ",
              "inner join survey_type_lut as st on s.survey_type_id = st.survey_type_id ",
              "inner join location as loc on s.location_id = loc.location_id ",
              "inner join location_type_lut as lt on loc.location_type_id = lt.location_type_id ",
+             "left join location_coordinates as lc on loc.location_id = lc.location_id ",
+             "inner join survey_sampler as ss on s.survey_id = ss.survey_id ",
+             "inner join sampler as smp on ss.sampler_id = smp.sampler_id ",
              "where s.survey_datetime >= '{start_date}' ",
              "and s.survey_datetime <= '{end_date}' ",
              "and st.survey_type_description in ",
@@ -15,78 +22,11 @@ get_creel_sites = function(pool, start_date, end_date) {
              "and lt.location_type_description = 'Creel survey site' ",
              "order by loc.location_name")
   con = poolCheckout(pool)
-  creel_site_list = DBI::dbGetQuery(con, qry) %>%
-    select(location_id, site_code, creel_site)
+  site_sampler_info_list = DBI::dbGetQuery(con, qry) %>%
+    mutate(survey_date = with_tz(survey_date, tzone = "America/Los_Angeles")) %>%
+    select(survey_id, location_id, sampler_id, site_code, creel_site,
+           first_name, last_name, sampler_name, survey_date,
+           latitude, longitude)
   poolReturn(con)
-  return(creel_site_list)
+  return(site_sampler_info_list)
 }
-
-# # Get all creel sites
-# get_survey_sites = function(pool) {
-#   qry = glue("select distinct loc.location_id, loc.location_name, ",
-#              "loc.location_code || ': ' || loc.location_name as survey_site ",
-#              "from location as loc ",
-#              "inner join location_type_lut ",
-#              "as lt on loc.location_type_id = lt.location_type_id ",
-#              "where lt.location_type_description = 'Creel survey site' ",
-#              "order by loc.location_name")
-#   con = poolCheckout(pool)
-#   survey_site_list = DBI::dbGetQuery(con, qry)
-#   poolReturn(con)
-#   return(survey_site_list)
-# }
-#
-# # Get polygons for catch areas to enable spatial join
-# get_catch_polys = function(pool, chosen_catch_areas) {
-#   qry = glue("select distinct loc.location_name as catch_area, ",
-#              "lb.geom as geometry ",
-#              "from location as loc ",
-#              "inner join location_boundary as lb on loc.location_id = lb.location_id ",
-#              "where loc.location_name in ({chosen_catch_areas}) ",
-#              "order by loc.location_name")
-#   con = poolCheckout(pool)
-#   areas_st = sf::st_read(con, query = qry, crs = 2927)
-#   poolReturn(con)
-#   return(areas_st)
-# }
-#
-# # Consolidate to single function
-# get_creel_sites = function(pool, chosen_years, chosen_months, chosen_catch_areas) {
-#   sites = get_year_sites(pool, chosen_years, chosen_months)
-#   polys = get_catch_polys(pool, chosen_catch_areas)
-#   polys = polys %>%
-#     st_buffer(., dist = 1000)
-#   # Combine to get catch_areas
-#   sites = sites %>%
-#     st_join(polys) %>%
-#     st_drop_geometry() %>%
-#     filter(!is.na(catch_area))
-#   return(sites)
-# }
-#
-# # Get survey dates at chosen sites
-# get_site_dates = function(pool, chosen_sites, start_date, end_date) {
-#   qry = glue("select distinct s.survey_datetime, loc.location_code as site_code, ",
-#              "loc.location_name ",
-#              "from survey as s ",
-#              "inner join survey_type_lut as st on s.survey_type_id = st.survey_type_id ",
-#              "inner join location as loc on s.location_id = loc.location_id ",
-#              "inner join location_coordinates as lc on loc.location_id = lc.location_id ",
-#              "where date_part('year', survey_datetime) in ({chosen_years}) ",
-#              "and date_part('month', survey_datetime) in ({chosen_months}) ",
-#              "and st.survey_type_description in ",
-#              "('Puget Sound dockside creel survey') ",
-#              "and loc.location_code is not null ",
-#              "and loc.location_code || ': ' || loc.location_name in ({chosen_sites}) ",
-#              "order by loc.location_name")
-#   con = poolCheckout(pool)
-#   survey_dates = dbGetQuery(con, qry) %>%
-#     arrange(survey_datetime, site_code) %>%
-#     mutate(fdate = format(survey_datetime, "%m/%d/%Y")) %>%
-#     mutate(date_site = paste0(fdate, ": ", site_code)) %>%
-#     distinct() %>%
-#     pull(date_site)
-#   poolReturn(con)
-#   return(survey_dates)
-# }
-
