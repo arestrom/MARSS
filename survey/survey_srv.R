@@ -52,6 +52,7 @@ when_where_surveys = reactive({
 site_ids = reactive({
   req(when_where_surveys())
   site_input = when_where_surveys()$location_id
+  # Account for cases where no locations were selected
   if (site_input[[1]] == "" ) {
     loc_id = get_uuid(1L)
   } else {
@@ -65,6 +66,7 @@ site_ids = reactive({
 site_dates = reactive({
   req(when_where_surveys())
   date_input = when_where_surveys()$survey_date
+  # Account for cases where no dates were selected
   if (date_input[[1]] == "" ) {
     date_vals = "1850-01-01"
   } else {
@@ -78,6 +80,7 @@ site_dates = reactive({
 sampler_ids = reactive({
   req(when_where_surveys())
   sampler_input = when_where_surveys()$sampler_id
+  # Account for cases where no samplers were selected
   if (sampler_input[[1]] == "" ) {
     samp_id = get_uuid(1L)
   } else {
@@ -87,18 +90,16 @@ sampler_ids = reactive({
   return(samp_ids)
 })
 
-
-# STOPPED HERE !!!!!!!!!!!!!!!!!!!!!!!!! Add sampler info below......
-
-
-
 # Primary DT datatable for database
 output$surveys = renderDT({
   req(when_where_surveys())
-  sites = paste0(unique(when_where_surveys()$creel_site), collapse = ", ")
-  dates = paste0(unique(when_where_surveys()$survey_date_dt), collapse = ", ")
+  survey_ids = unique(when_where_surveys()$survey_id)
+  survey_ids = paste0(paste0("'", survey_ids, "'"), collapse = ", ")
+  # sites = paste0(unique(when_where_surveys()$creel_site), collapse = ", ")
+  # dates = paste0(unique(when_where_surveys()$survey_date_dt), collapse = ", ")
+  # samplers = paste0(unique(when_where_surveys()$sampler_id), collapse = ", ")
   survey_title = glue("Surveys for {sites} on {dates}")
-  survey_data = get_surveys(pool, site_ids(), site_dates()) %>%
+  survey_data = get_surveys(pool, survey_ids) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,
