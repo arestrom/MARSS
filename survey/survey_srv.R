@@ -44,62 +44,31 @@ when_where_surveys = reactive({
     filter(sampler_name %in% input_sampler_names) %>%
     filter(code_date %in% input_code_dates) %>%
     arrange(creel_site, as.Date(survey_date), sampler_name)
-  print(filtered_survey_list)
   return(filtered_survey_list)
 })
 
-# Pull out site_ids as a text string
-site_ids = reactive({
+# Pull out sites as a text string
+survey_ids = reactive({
   req(when_where_surveys())
-  site_input = when_where_surveys()$location_id
+  survey_input = when_where_surveys()$survey_id
   # Account for cases where no locations were selected
-  if (site_input[[1]] == "" ) {
-    loc_id = get_uuid(1L)
+  if (survey_input[[1]] == "" ) {
+    survey_ids = get_uuid(1L)
   } else {
-    loc_id = when_where_surveys()$location_id
+    survey_ids = when_where_surveys()$survey_id
   }
-  loc_ids = paste0(paste0("'", loc_id, "'"), collapse = ", ")
-  return(loc_ids)
-})
-
-# Pull out site_ids as a text string
-site_dates = reactive({
-  req(when_where_surveys())
-  date_input = when_where_surveys()$survey_date
-  # Account for cases where no dates were selected
-  if (date_input[[1]] == "" ) {
-    date_vals = "1850-01-01"
-  } else {
-    date_vals = when_where_surveys()$survey_date
-  }
-  site_dt = paste0(paste0("'", date_vals, "'"), collapse = ", ")
-  return(site_dt)
-})
-
-# Pull out site_ids as a text string
-sampler_ids = reactive({
-  req(when_where_surveys())
-  sampler_input = when_where_surveys()$sampler_id
-  # Account for cases where no samplers were selected
-  if (sampler_input[[1]] == "" ) {
-    samp_id = get_uuid(1L)
-  } else {
-    samp_id = when_where_surveys()$sampler_id
-  }
-  samp_ids = paste0(paste0("'", samp_id, "'"), collapse = ", ")
-  return(samp_ids)
+  survey_ids = paste0(paste0("'", survey_ids, "'"), collapse = ", ")
+  return(survey_ids)
 })
 
 # Primary DT datatable for database
 output$surveys = renderDT({
-  req(when_where_surveys())
-  survey_ids = unique(when_where_surveys()$survey_id)
-  survey_ids = paste0(paste0("'", survey_ids, "'"), collapse = ", ")
-  # sites = paste0(unique(when_where_surveys()$creel_site), collapse = ", ")
-  # dates = paste0(unique(when_where_surveys()$survey_date_dt), collapse = ", ")
-  # samplers = paste0(unique(when_where_surveys()$sampler_id), collapse = ", ")
+  req(survey_ids())
+  sites = paste0(input$site_select, collapse = ", ")
+  dates = substr(input$site_sampler_date_select, 7, 17)
+  dates = paste0(dates, collapse = ", ")
   survey_title = glue("Surveys for {sites} on {dates}")
-  survey_data = get_surveys(pool, survey_ids) %>%
+  survey_data = get_surveys(pool, survey_ids()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,
@@ -128,7 +97,7 @@ survey_dt_proxy = dataTableProxy(outputId = "surveys")
 
 # Set row selection to NULL if tab changes
 observeEvent(input$tabs, {
-  if (input$tabs == "crc_site") {
+  if (input$tabs == "when_where") {
     selectRows(survey_dt_proxy, NULL)
   }
 })
@@ -140,7 +109,7 @@ observeEvent(input$tabs, {
 # Create reactive to collect input values for update and delete actions
 selected_survey_data = reactive({
   req(input$surveys_rows_selected)
-  surveys = get_surveys(pool, site_ids(), site_dates())
+  surveys = get_surveys(pool, survey_ids())
   survey_row = input$surveys_rows_selected
   selected_survey = tibble(survey_id = surveys$survey_id[survey_row],
                            survey_date = surveys$survey_date[survey_row],
@@ -272,7 +241,7 @@ observeEvent(input$survey_add, {
     mutate(end_time = format(end_time, "%H:%M")) %>%
     mutate(survey_design = if_else(survey_design == "", NA_character_, survey_design)) %>%
     select(survey_date, survey_site, sampler_name, start_time, end_time, any_effort)
-  existing_survey_vals = get_surveys(pool, site_ids(), site_dates()) %>%
+  existing_survey_vals = get_surveys(pool, survey_ids()) %>%
     mutate(survey_date = format(survey_date)) %>%
     mutate(start_time = format(start_time, "%H:%M")) %>%
     mutate(end_time = format(end_time, "%H:%M")) %>%
@@ -359,7 +328,7 @@ observeEvent(input$insert_survey, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  post_insert_vals = get_surveys(pool, site_ids(), site_dates()) %>%
+  post_insert_vals = get_surveys(pool, survey_ids()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,
@@ -535,7 +504,7 @@ observeEvent(input$save_survey_edits, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  post_survey_edit_vals = get_surveys(pool, site_ids(), site_dates()) %>%
+  post_survey_edit_vals = get_surveys(pool, survey_ids()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,
@@ -551,7 +520,7 @@ observeEvent(input$save_survey_edits, {
 # Generate values to show in modal
 output$survey_modal_delete_vals = renderDT({
   survey_modal_del_id = selected_survey_data()$survey_id
-  survey_modal_del_vals = get_surveys(pool, site_ids(), site_dates()) %>%
+  survey_modal_del_vals = get_surveys(pool, survey_ids()) %>%
     filter(survey_id == survey_modal_del_id) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
@@ -618,7 +587,7 @@ observeEvent(input$delete_survey, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  surveys_after_delete = get_surveys(pool, site_ids(), site_dates()) %>%
+  surveys_after_delete = get_surveys(pool, survey_ids()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,

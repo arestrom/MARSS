@@ -24,7 +24,7 @@ output$site_select = renderUI({
               label = "Select the creel site(s)",
               multiple = TRUE,
               choices = creel_site_list,
-              selected = creel_site_list[1],
+              selected = creel_site_list[8],
               width = "100%",
               options = pickerOptions(actionsBox = TRUE))
 })
@@ -50,7 +50,7 @@ output$site_sampler_select = renderUI({
               label = "Select the sampler(s)",
               multiple = TRUE,
               choices = creel_site_samplers()$sampler_name,
-              selected = creel_site_samplers()$sampler_name[1],
+              selected = creel_site_samplers()$sampler_name[2],
               width = "100%",
               options = pickerOptions(actionsBox = TRUE))
 })
@@ -106,13 +106,14 @@ selected_sites = reactive({
     mutate(longitude = if_else(is.na(longitude),
                               sample(random_lon, size = 1),
                               longitude))
-  print(creel_site_coords)
   return(creel_site_coords)
 })
 
 # Sampling location bounds query
 site_bounds = reactive({
+  req(input$site_select)
   req(selected_sites())
+  req(nrow(selected_sites()) > 0L)
   ramp_bounds = selected_sites() %>%
     mutate(min_lat = min(latitude) - 0.0015,
            min_lon = min(longitude) - 0.0015,
@@ -125,6 +126,8 @@ site_bounds = reactive({
 
 # Output leaflet bidn map
 output$site_map <- renderLeaflet({
+  req(input$site_select)
+  req(nrow(selected_sites()) > 0L)
   req(site_bounds())
   validate(
     need(input$site_select != "", "Please select at least one creel site!")

@@ -17,8 +17,7 @@ get_surveys = function(pool, survey_ids) {
              "left join sampler as smp on ss.sampler_id = smp.sampler_id ",
              "left join survey_design_type_lut as sdt ",
              "on s.survey_design_type_id = sdt.survey_design_type_id ",
-             "where s.location_id in ({location_ids}) ",
-             "and date(survey_datetime::timestamp at time zone 'America/Los_Angeles') in ({survey_dates})")
+             "where s.survey_id in ({survey_ids})")
   con = poolCheckout(pool)
   surveys = DBI::dbGetQuery(con, qry)
   poolReturn(con)
