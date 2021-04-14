@@ -9,7 +9,10 @@ output$all_sites_select = renderUI({
               choices = survey_site_list,
               selected = survey_site_list[1],
               width = "325px",
-              options = pickerOptions(actionsBox = TRUE))
+              options = list(pickerOptions(
+                actionsBox = TRUE),
+                "style-base" = "form-control", style = "")
+  )
 })
 
 # All sampler select
@@ -22,7 +25,10 @@ output$all_samplers_select = renderUI({
               choices = survey_sampler_list,
               selected = survey_sampler_list[1],
               width = "225px",
-              options = pickerOptions(actionsBox = TRUE))
+              options = list(pickerOptions(
+                actionsBox = TRUE),
+                "style-base" = "form-control", style = "")
+  )
 })
 
 # # Primary DT datatable for samplers

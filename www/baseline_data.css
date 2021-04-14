@@ -70,6 +70,7 @@
   vertical-align: middle;
   padding-top: 3px;         /* keep: This does the trick in centering vertically */
   border-radius: 4px;
+  border: #d2d6de;
 }
 
 .shiny-output-error-validation {
@@ -82,9 +83,11 @@
   font-size: 11px;
 }
 
-.btn-default {              /* keep: Sets background color inside pickerInput to white */
+/*
+.btn-default {
   background-color: #ffffff;
 }
+*/
 
 .dropdown-menu {            /* keep: Sets selections in dropdown list to 11px. May want to try em */
   font-size: 11px;
