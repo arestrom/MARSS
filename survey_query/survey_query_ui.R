@@ -20,6 +20,9 @@ survey_query_ui = tags$div(
            br(),
            br(),
            br(),
-           DT::DTOutput("surveys_query"))
+           DT::DTOutput("surveys_query"),
+           br(),
+           br(),
+           DT::DTOutput("query_events"))
   )
 )

@@ -22,24 +22,22 @@
 #
 #
 # ToDo:
-#  1. Make sure all sites show up....Olson's etc issue....Still need to test full.
-#  2. Compile interim version for testing.....Done
-#  3. Add bird stuff, and ability to add new samplers.
-#  4. Then update creel site coordinates to values from Dale Gombert,
-#     and allow editing creel locations using interface.
+#  1. Enable movable modals?
+#  2. Add coordinates for all sites?
+#  3. Add bird stuff?
+#  4. Update colnames to all DTs
 #  5. Add ability to enter scale and age data later after
-#     inital set of CWT with age data has been added. Can
+#     inital set of CWT with age data has been added? Can
 #     then join by CWT label. This will handle 'scales taken'
 #     question on paper form.
-#  6. Switch to keyring....Done
-#  7. Add ability to set credentials in separate interface.
-#  8. Add Special Areas Fisheries and Terminal Area Fisheries
-#     to CRC drop-down list.    Think its done....Check !
-#  9. Add field to input 2-pole data at interview level.
-# 10. Add field to input descending device data at interview level.
-# 11. Need to add coordinates to all creel sites.
+#  6. Compare baseline_data.css with marss.css to see where styling error came from.
+#  7. Check all info popups to make sure they are relevant.
+#  8. For final version edit to make sure only SS is used...dump ss_test.
+#  9. Add field to input 2-pole data at interview level?
+# 10. Add field to input descending device data at interview level?
+# 11.
 #
-# AS 2021-03-25
+# AS 2021-04-14
 #==============================================================
 
 # Load libraries
