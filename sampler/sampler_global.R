@@ -97,7 +97,7 @@ get_sampler_dependencies = function(pool, sampler_id) {
              "from survey_sampler as ss ",
              "where ss.sampler_id = '{sampler_id}'")
   con = poolCheckout(pool)
-  sampler_dependents = DBI::dbGetQuery(pool, qry)
+  sampler_dependents = DBI::dbGetQuery(con, qry)
   poolReturn(con)
   has_entries = function(x) any(x > 0L)
   sampler_dependents = sampler_dependents %>%

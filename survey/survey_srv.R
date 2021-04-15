@@ -249,7 +249,7 @@ observeEvent(input$survey_add, {
     mutate(start_time = format(start_time, "%H:%M")) %>%
     mutate(end_time = format(end_time, "%H:%M")) %>%
     select(survey_date, survey_site, sampler_name, start_time, end_time, any_effort)
-  dup_flag = dup_survey(pool, new_survey_vals, existing_survey_vals)
+  dup_flag = dup_survey(new_survey_vals, existing_survey_vals)
   showModal(
     # Verify required fields have values
     tags$div(id = "survey_insert_modal",

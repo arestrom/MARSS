@@ -425,7 +425,7 @@ sample_site_insert_vals = reactive({
 # Update DB and reload DT
 observeEvent(input$insert_sample_site, {
   tryCatch({
-    sample_site_insert(sample_site_insert_vals())
+    sample_site_insert(pool, sample_site_insert_vals())
     shinytoastr::toastr_success("New sample_site was entered")
   }, error = function(e) {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))

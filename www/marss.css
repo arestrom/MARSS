@@ -542,6 +542,10 @@
   line-height: 0.9;
 }
 
+#test_connection {
+  background-color: #3c8dbc;
+}
+
 #survey_insert_modal .modal-lg {
   width: 1200px;
 }

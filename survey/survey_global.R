@@ -92,7 +92,7 @@ get_survey_design = function(pool) {
 #==========================================================================
 
 # Check for existing surveys prior to survey insert operation
-dup_survey = function(pool, new_survey_vals, existing_survey_vals) {
+dup_survey = function(new_survey_vals, existing_survey_vals) {
   matching_rows = new_survey_vals %>%
     inner_join(existing_survey_vals,
                by = c("survey_date", "survey_site", "sampler_name", "start_time",

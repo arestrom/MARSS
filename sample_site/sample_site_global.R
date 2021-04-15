@@ -46,7 +46,7 @@ get_sample_sites = function(pool) {
 #========================================================
 
 # Define the insert callback
-sample_site_insert = function(new_sample_site_values) {
+sample_site_insert = function(pool, new_sample_site_values) {
   new_insert_values = new_sample_site_values
   # Generate location_id
   location_id = get_uuid(1L)

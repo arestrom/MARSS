@@ -33,10 +33,8 @@
 #  6. For final version edit to make sure only SS is used...dump ss_test.
 #  7. Add field to input 2-pole data at interview level?
 #  8. Add field to input descending device data at interview level?
-#  9. Leaked pooled object in compiled version.
-# 10. Test connection button covered up.
 #
-# AS 2021-04-14
+# AS 2021-04-15
 #==============================================================
 
 # Load libraries
