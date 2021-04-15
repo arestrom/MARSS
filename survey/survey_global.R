@@ -1,5 +1,5 @@
 # Function to get header data...use single-select for year
-get_surveys = function(pool, location_ids, survey_dates) {
+get_surveys = function(pool, survey_ids) {
   qry = glue("select s.survey_id, s.survey_datetime as survey_date, loc.location_id, ",
              "loc.location_code || ': ' || loc.location_name as survey_site, ",
              "smp.sampler_id, smp.first_name || ' ' || smp.last_name as sampler_name, ",
@@ -17,8 +17,7 @@ get_surveys = function(pool, location_ids, survey_dates) {
              "left join sampler as smp on ss.sampler_id = smp.sampler_id ",
              "left join survey_design_type_lut as sdt ",
              "on s.survey_design_type_id = sdt.survey_design_type_id ",
-             "where s.location_id in ({location_ids}) ",
-             "and date(survey_datetime::timestamp at time zone 'America/Los_Angeles') in ({survey_dates})")
+             "where s.survey_id in ({survey_ids})")
   con = poolCheckout(pool)
   surveys = DBI::dbGetQuery(con, qry)
   poolReturn(con)

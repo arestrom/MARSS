@@ -611,7 +611,7 @@ observeEvent(input$sample_site_edit, {
 observeEvent(input$save_sample_site_edits, {
   tryCatch({
     sample_site_update(pool, sample_site_edit(), selected_sample_site_data())
-    shinytoastr::toastr_success("Reach end point was edited")
+    shinytoastr::toastr_success("Sample site was edited")
   }, error = function(e) {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })

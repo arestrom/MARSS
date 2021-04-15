@@ -1,130 +1,86 @@
 
 #========================================================
-# Get set of years of data to focus on
-#========================================================
-
-output$year_select = renderUI({
-  year_list = seq(2020, 1986)
-  pickerInput("year_select", label = "Select the survey year(s)",
-              choices = year_list,
-              selected = year_list[9],
-              multiple = TRUE,
-              width = "100%",
-              options = pickerOptions(actionsBox = TRUE))
-})
-
-#========================================================
-# Get set of months of data to focus on
-#========================================================
-
-output$month_select = renderUI({
-  req(input$year_select)
-  month_list = month.name
-  pickerInput("month_select", label = "Select the survey month(s)",
-              choices = month_list,
-              selected = month_list[7],
-              multiple = TRUE,
-              width = "100%",
-              options = pickerOptions(actionsBox = TRUE))
-})
-
-#========================================================
-# Get Initial CRC area....set to multiple....shinyWidgets
-#========================================================
-
-# CRC select
-output$crc_select = renderUI({
-  req(input$year_select)
-  req(input$month_select)
-  req(valid_connection == TRUE)
-  crc_list = get_crc_list(pool)$crc_name
-  pickerInput(inputId = "crc_select",
-              label = "Select Area(s) where the creel site is located",
-              multiple = TRUE,
-              choices = crc_list,
-              selected = "Area 5, Sekiu and Pillar Point",
-              width = "100%",
-              options = pickerOptions(actionsBox = TRUE))
-})
-
-#========================================================
 # Get initial set of creel locations for crc areas
 #========================================================
 
 # Get all creel sites in selected catch areas for selected years
-creel_sites = reactive({
-  req(input$year_select)
-  req(input$month_select)
-  req(input$crc_select)
-  chosen_years = input$year_select
-  chosen_years = paste0(chosen_years, collapse = ", ")
-  chosen_months = input$month_select
-  chosen_months = paste0(match(chosen_months, month.name), collapse = ", ")
-  chosen_catch_areas = input$crc_select
-  chosen_catch_areas = paste0(paste0("'", chosen_catch_areas, "'"), collapse = ", ")
-  creel_sites = get_creel_sites(pool, chosen_years, chosen_months, chosen_catch_areas) %>%
-    mutate(site_label = paste0(site_code, ": ", site_name)) %>%
-    select(location_id, site_code, site_name, site_label, catch_area,
+site_sampler_info = reactive({
+  req(valid_connection == TRUE)
+  req(input$when_date_range)
+  start_date = input$when_date_range[1]
+  end_date = input$when_date_range[2]
+  site_sampler_info_list = get_site_sampler_info(pool, start_date, end_date) %>%
+    select(survey_id, location_id, sampler_id, site_code, creel_site,
+           first_name, last_name, sampler_name, survey_date,
            latitude, longitude)
-  return(creel_sites)
-})
-
-# Pull out creel_site_list from creel_sites
-creel_site_list = reactive({
-  creel_site_data = creel_sites() %>%
-    select(site_label) %>%
-    arrange(site_label) %>%
-    distinct() %>%
-    pull(site_label)
-  return(creel_site_data)
+  return(site_sampler_info_list)
 })
 
 # Creel site select
 output$site_select = renderUI({
-  req(input$year_select)
-  req(input$month_select)
-  req(input$crc_select)
+  req(site_sampler_info())
+  creel_site_list = unique(site_sampler_info()$creel_site)
   pickerInput(inputId = "site_select",
               label = "Select the creel site(s)",
               multiple = TRUE,
-              choices = creel_site_list(),
-              selected = creel_site_list()[4],
+              choices = creel_site_list,
+              selected = creel_site_list[8],
               width = "100%",
               options = pickerOptions(actionsBox = TRUE))
 })
 
-#========================================================
-# Get available survey dates for years and sites
-#========================================================
-
-site_date_list = reactive({
-  req(input$year_select)
-  req(input$month_select)
-  req(input$crc_select)
+# Get all creel sites in selected catch areas for selected years
+creel_site_samplers = reactive({
+  req(site_sampler_info())
   req(input$site_select)
-  chosen_sites = input$site_select
-  chosen_sites = gsub("'", "''", chosen_sites)
-  chosen_sites = paste0(paste0("'", chosen_sites, "'"), collapse = ", ")
-  chosen_years = input$year_select
-  chosen_years = paste0(chosen_years, collapse = ", ")
-  chosen_months = input$month_select
-  chosen_months = paste0(match(chosen_months, month.name), collapse = ", ")
-  survey_dates = get_site_dates(pool, chosen_sites, chosen_years, chosen_months)
-  return(survey_dates)
+  input_site_codes = substr(input$site_select, 1, 4)
+  site_sampler_list = site_sampler_info() %>%
+    filter(site_code %in% input_site_codes) %>%
+    arrange(last_name, first_name) %>%
+    select(sampler_id, sampler_name) %>%
+    distinct()
+  return(site_sampler_list)
 })
 
 # Creel site select
-output$date_select = renderUI({
-  req(input$year_select)
-  req(input$month_select)
-  req(input$crc_select)
-  req(input$site_select)
-  req(!input$site_select == "")
-  pickerInput(inputId = "date_select",
-              label = "Select the survey date(s)",
+output$site_sampler_select = renderUI({
+  req(site_sampler_info())
+  req(creel_site_samplers())
+  pickerInput(inputId = "site_sampler_select",
+              label = "Select the sampler(s)",
               multiple = TRUE,
-              choices = site_date_list(),
-              selected = site_date_list()[1],
+              choices = creel_site_samplers()$sampler_name,
+              selected = creel_site_samplers()$sampler_name[2],
+              width = "100%",
+              options = pickerOptions(actionsBox = TRUE))
+})
+
+# Get all creel sites in selected catch areas for selected years
+site_sampler_dates = reactive({
+  req(site_sampler_info())
+  req(creel_site_samplers())
+  req(input$site_sampler_select)
+  input_site_codes = substr(input$site_select, 1, 4)
+  input_sampler_names = input$site_sampler_select
+  site_sampler_date_list = site_sampler_info() %>%
+    filter(site_code %in% input_site_codes) %>%
+    filter(sampler_name %in% input_sampler_names) %>%
+    arrange(as.Date(survey_date)) %>%
+    mutate(survey_date_dt = format(survey_date, "%m/%d/%Y")) %>%
+    mutate(code_date = paste0(site_code, ": ", survey_date_dt))
+  return(site_sampler_date_list)
+})
+
+# Creel site select
+output$site_sampler_date_select = renderUI({
+  req(site_sampler_info())
+  req(site_sampler_dates())
+  site_samp_dt = unique(site_sampler_dates()$code_date)
+  pickerInput(inputId = "site_sampler_date_select",
+              label = "Select the date(s)",
+              multiple = TRUE,
+              choices = site_samp_dt,
+              selected = site_samp_dt[1],
               width = "100%",
               options = pickerOptions(actionsBox = TRUE))
 })
@@ -134,23 +90,30 @@ output$date_select = renderUI({
 #========================================================
 
 selected_sites = reactive({
-  req(input$year_select)
-  req(input$month_select)
-  req(input$crc_select)
-  req(input$site_select)
-  creel_site_coords = creel_sites() %>%
-    filter(site_label %in% input$site_select) %>%
-    select(location_id, site_name, latitude, longitude)
+  req(site_sampler_dates())
+  random_lat = seq(47.03702, 47.03763, by = 0.00001)
+  random_lon = seq( -122.89896, -122.89669, by = 0.0001)
+  creel_site_coords = site_sampler_dates() %>%
+    select(location_id, site_name = creel_site,
+           latitude, longitude) %>%
+    distinct() %>%
+    mutate(site_name = if_else(is.na(latitude) | is.na(longitude),
+                               paste0(site_name, " (need coordinates)"),
+                               site_name)) %>%
+    mutate(latitude = if_else(is.na(latitude),
+                              sample(random_lat, size = 1),
+                              latitude)) %>%
+    mutate(longitude = if_else(is.na(longitude),
+                              sample(random_lon, size = 1),
+                              longitude))
   return(creel_site_coords)
 })
 
 # Sampling location bounds query
 site_bounds = reactive({
-  req(input$year_select)
-  req(input$month_select)
-  req(input$crc_select)
   req(input$site_select)
-  req(!input$site_select == "")
+  req(selected_sites())
+  req(nrow(selected_sites()) > 0L)
   ramp_bounds = selected_sites() %>%
     mutate(min_lat = min(latitude) - 0.0015,
            min_lon = min(longitude) - 0.0015,
@@ -163,14 +126,10 @@ site_bounds = reactive({
 
 # Output leaflet bidn map
 output$site_map <- renderLeaflet({
-  req(input$year_select)
-  req(input$month_select)
-  req(input$crc_select)
   req(input$site_select)
+  req(nrow(selected_sites()) > 0L)
+  req(site_bounds())
   validate(
-    need(input$year_select != "", "Please select at least one year!"),
-    need(input$month_select != "", "Please select at least one month!"),
-    need(input$crc_select != "", "Please select at least one month!"),
     need(input$site_select != "", "Please select at least one creel site!")
   )
   m = leaflet() %>%

@@ -31,45 +31,44 @@ output$any_effort_select = renderUI({
                  width = "100px")
 })
 
-# Pull out site_ids as a text string
-site_ids = reactive({
-  req(input$site_select)
-  site_input = input$site_select
-    if (site_input[[1]] == "" ) {
-      loc_id = get_uuid(1L)
-    } else {
-      site_vals = get_all_sites(pool)
-      loc_id = site_vals %>%
-        filter(survey_site %in% site_input) %>%
-        pull(location_id)
-    }
-  loc_ids = paste0(paste0("'", loc_id, "'"), collapse = ", ")
-  return(loc_ids)
+# Get all creel sites in selected catch areas for selected years
+when_where_surveys = reactive({
+  req(site_sampler_info())
+  req(site_sampler_dates())
+  req(input$site_sampler_date_select)
+  input_site_codes = substr(input$site_select, 1, 4)
+  input_sampler_names = input$site_sampler_select
+  input_code_dates = input$site_sampler_date_select
+  filtered_survey_list = site_sampler_dates() %>%
+    filter(site_code %in% input_site_codes) %>%
+    filter(sampler_name %in% input_sampler_names) %>%
+    filter(code_date %in% input_code_dates) %>%
+    arrange(creel_site, as.Date(survey_date), sampler_name)
+  return(filtered_survey_list)
 })
 
-# Pull out site_ids as a text string
-site_dates = reactive({
-  req(input$date_select)
-  date_input = input$date_select
-  if (date_input[[1]] == "" ) {
-    date_vals = "1850-01-01"
+# Pull out sites as a text string
+survey_ids = reactive({
+  req(when_where_surveys())
+  survey_input = when_where_surveys()$survey_id
+  # Account for cases where no locations were selected
+  if (survey_input[[1]] == "" ) {
+    survey_ids = get_uuid(1L)
   } else {
-    date_vals = input$date_select
-    date_vals = format(as.Date(substr(date_vals, 1, 10), format = "%m/%d/%Y"))
+    survey_ids = when_where_surveys()$survey_id
   }
-  site_dt = paste0(paste0("'", date_vals, "'"), collapse = ", ")
-  return(site_dt)
+  survey_ids = paste0(paste0("'", survey_ids, "'"), collapse = ", ")
+  return(survey_ids)
 })
 
 # Primary DT datatable for database
 output$surveys = renderDT({
-  req(input$site_select)
-  req(input$date_select)
+  req(survey_ids())
   sites = paste0(input$site_select, collapse = ", ")
-  dates = substr(input$date_select, 1, 10)
+  dates = substr(input$site_sampler_date_select, 7, 17)
   dates = paste0(dates, collapse = ", ")
   survey_title = glue("Surveys for {sites} on {dates}")
-  survey_data = get_surveys(pool, site_ids(), site_dates()) %>%
+  survey_data = get_surveys(pool, survey_ids()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,
@@ -77,6 +76,9 @@ output$surveys = renderDT({
            modified_dt, modified_by)
   # Generate table
   datatable(survey_data,
+            colnames = c("Survey date", "Survey site", "Sampler name", "Start time",
+                         "End time", "Survey design", "Any effort?", "Survey comment",
+                         "Create DT", "Create By", "Mod DT", "Mod By"),
             selection = list(mode = 'single'),
             extensions = 'Buttons',
             options = list(dom = 'Blftp',
@@ -98,7 +100,7 @@ survey_dt_proxy = dataTableProxy(outputId = "surveys")
 
 # Set row selection to NULL if tab changes
 observeEvent(input$tabs, {
-  if (input$tabs == "crc_site") {
+  if (input$tabs == "when_where") {
     selectRows(survey_dt_proxy, NULL)
   }
 })
@@ -110,7 +112,7 @@ observeEvent(input$tabs, {
 # Create reactive to collect input values for update and delete actions
 selected_survey_data = reactive({
   req(input$surveys_rows_selected)
-  surveys = get_surveys(pool, site_ids(), site_dates())
+  surveys = get_surveys(pool, survey_ids())
   survey_row = input$surveys_rows_selected
   selected_survey = tibble(survey_id = surveys$survey_id[survey_row],
                            survey_date = surveys$survey_date[survey_row],
@@ -242,7 +244,7 @@ observeEvent(input$survey_add, {
     mutate(end_time = format(end_time, "%H:%M")) %>%
     mutate(survey_design = if_else(survey_design == "", NA_character_, survey_design)) %>%
     select(survey_date, survey_site, sampler_name, start_time, end_time, any_effort)
-  existing_survey_vals = get_surveys(pool, site_ids(), site_dates()) %>%
+  existing_survey_vals = get_surveys(pool, survey_ids()) %>%
     mutate(survey_date = format(survey_date)) %>%
     mutate(start_time = format(start_time, "%H:%M")) %>%
     mutate(end_time = format(end_time, "%H:%M")) %>%
@@ -329,7 +331,7 @@ observeEvent(input$insert_survey, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  post_insert_vals = get_surveys(pool, site_ids(), site_dates()) %>%
+  post_insert_vals = get_surveys(pool, survey_ids()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,
@@ -505,7 +507,7 @@ observeEvent(input$save_survey_edits, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  post_survey_edit_vals = get_surveys(pool, site_ids(), site_dates()) %>%
+  post_survey_edit_vals = get_surveys(pool, survey_ids()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,
@@ -521,7 +523,7 @@ observeEvent(input$save_survey_edits, {
 # Generate values to show in modal
 output$survey_modal_delete_vals = renderDT({
   survey_modal_del_id = selected_survey_data()$survey_id
-  survey_modal_del_vals = get_surveys(pool, site_ids(), site_dates()) %>%
+  survey_modal_del_vals = get_surveys(pool, survey_ids()) %>%
     filter(survey_id == survey_modal_del_id) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
@@ -588,7 +590,7 @@ observeEvent(input$delete_survey, {
     shinytoastr::toastr_error(title = "Database error", conditionMessage(e))
   })
   removeModal()
-  surveys_after_delete = get_surveys(pool, site_ids(), site_dates()) %>%
+  surveys_after_delete = get_surveys(pool, survey_ids()) %>%
     mutate(start_time = start_time_dt, end_time = end_time_dt) %>%
     select(survey_date = survey_date_dt, survey_site, sampler_name,
            start_time, end_time, survey_design, any_effort,

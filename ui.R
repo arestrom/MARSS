@@ -5,7 +5,7 @@ ui = dashboardPagePlus(
   header = dash_header,
   sidebar = dash_leftsidebar,
   body = dashboardBody(
-    includeCSS("www/baseline_data.css"),
+    includeCSS("www/marss.css"),
     tabItems(
       tabItem(tabName = "when_where",
               fluidRow(
@@ -119,7 +119,7 @@ ui = dashboardPagePlus(
                 br(),
                 br(),
                 boxPlus(
-                  title = "Verify and store database credentials",
+                  title = "Verify and store login values",
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
