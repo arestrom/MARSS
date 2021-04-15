@@ -76,6 +76,9 @@ output$surveys = renderDT({
            modified_dt, modified_by)
   # Generate table
   datatable(survey_data,
+            colnames = c("Survey date", "Survey site", "Sampler name", "Start time",
+                         "End time", "Survey design", "Any effort?", "Survey comment",
+                         "Create DT", "Create By", "Mod DT", "Mod By"),
             selection = list(mode = 'single'),
             extensions = 'Buttons',
             options = list(dom = 'Blftp',

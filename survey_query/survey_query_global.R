@@ -130,37 +130,3 @@ get_query_event = function(pool, survey_id) {
   return(interview_events)
 }
 
-# # Main dockside event query
-# get_dockside_event = function(pool, survey_event_id) {
-#   qry = glue("select de.dockside_encounter_id, de.survey_event_id, ",
-#              "de.trip_start_datetime, de.fish_start_datetime, ",
-#              "de.fish_end_datetime, de.trip_end_datetime, ",
-#              "de.angler_no_license_count as no_license, ",
-#              "de.created_datetime as created_date, de.created_by, ",
-#              "de.modified_datetime as modified_date, de.modified_by ",
-#              "from dockside_encounter as de ",
-#              "where de.survey_event_id = '{survey_event_id}'")
-#   con = poolCheckout(pool)
-#   dockside_events = DBI::dbGetQuery(con, qry)
-#   dockside_events = dockside_events %>%
-#     mutate(trip_start_datetime = with_tz(trip_start_datetime, tzone = "America/Los_Angeles")) %>%
-#     mutate(trip_start = format(trip_start_datetime, "%m/%d/%Y %H:%M")) %>%
-#     mutate(fish_start_datetime = with_tz(fish_start_datetime, tzone = "America/Los_Angeles")) %>%
-#     mutate(fish_start = format(fish_start_datetime, "%m/%d/%Y %H:%M")) %>%
-#     mutate(fish_end_datetime = with_tz(fish_end_datetime, tzone = "America/Los_Angeles")) %>%
-#     mutate(fish_end = format(fish_end_datetime, "%m/%d/%Y %H:%M")) %>%
-#     mutate(trip_end_datetime = with_tz(trip_end_datetime, tzone = "America/Los_Angeles")) %>%
-#     mutate(trip_end = format(trip_end_datetime, "%m/%d/%Y %H:%M")) %>%
-#     mutate(created_date = with_tz(created_date, tzone = "America/Los_Angeles")) %>%
-#     mutate(created_dt = format(created_date, "%m/%d/%Y %H:%M")) %>%
-#     mutate(modified_date = with_tz(modified_date, tzone = "America/Los_Angeles")) %>%
-#     mutate(modified_dt = format(modified_date, "%m/%d/%Y %H:%M")) %>%
-#     select(dockside_encounter_id, survey_event_id, trip_start_datetime, trip_start,
-#            fish_start_datetime, fish_start, fish_end_datetime, fish_end, trip_end_datetime,
-#            trip_end, no_license, created_date, created_dt, created_by, modified_date,
-#            modified_dt, modified_by) %>%
-#     arrange(created_date)
-#   poolReturn(con)
-#   return(dockside_events)
-# }
-
