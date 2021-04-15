@@ -19,20 +19,19 @@
 #  4. To set security groups for postgis/postgres:
 #     https://postgis.net/workshops/postgis-intro/security.html
 #     Code located at: "PSS/sport_sampling/create_sport_sampling_roles.sql"
+#  5. Just setting #test_connection {background-color: #fffff;} fixed styling issue
 #
 #
 # ToDo:
 #  1. Enable movable modals?
-#  2. Add coordinates for all sites?
-#  3. Add bird stuff?
-#  4. Add ability to enter scale and age data later after
+#  2. Add birds hooked interface?
+#  3. Add ability to enter scale and age data later after
 #     inital set of CWT with age data has been added? Can
 #     then join by CWT label. This will handle 'scales taken'
 #     question on paper form.
-#  5. Compare baseline_data.css with marss.css to see where styling error came from.
-#  6. For final version edit to make sure only SS is used...dump ss_test.
-#  7. Add field to input 2-pole data at interview level?
-#  8. Add field to input descending device data at interview level?
+#  4. For final version edit to make sure only SS is used...dump ss_test.
+#  5. Add field to input 2-pole data at interview level?
+#  6. Add field to input descending device data at interview level?
 #
 # AS 2021-04-15
 #==============================================================
