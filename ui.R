@@ -1,29 +1,32 @@
-ui = dashboardPagePlus(
-  shinyjs::useShinyjs(),
-  shinytoastr::useToastr(),
-  enable_preloader = TRUE,
+ui = dashboardPage(
   header = dash_header,
   sidebar = dash_leftsidebar,
   body = dashboardBody(
     includeCSS("www/marss.css"),
+    shinyjs::useShinyjs(),
+    shinytoastr::useToastr(),
     tabItems(
       tabItem(tabName = "when_where",
               fluidRow(
                 br(),
                 br(),
-                boxPlus(
+                box(
                   title = "Select dates and creel locations",
+                  loadingState(),
+                  width = 12,
+                  height = "800px",
                   closable = FALSE,
                   solidHeader = FALSE,
                   collapsible = TRUE,
                   collapsed = FALSE,
-                  width = 12,
-                  enable_sidebar = TRUE,
-                  sidebar_width = 25,
-                  sidebar_start_open = TRUE,
-                  sidebar_content = when_where_ui,
-                  leafletOutput("site_map", height = "800px") %>%
-                    shinycssloaders::withSpinner(., size = 0.5)
+                  sidebar = boxSidebar(
+                    id = "year_map_sidebar",
+                    width = 30,
+                    startOpen = TRUE,
+                    icon = shiny::icon("bars"),
+                    when_where_ui
+                  ),
+                  leafletOutput("site_map", height = "800px")
                 )
               )
       ),
@@ -31,41 +34,41 @@ ui = dashboardPagePlus(
               fluidRow(
                 br(),
                 br(),
-                boxPlus(
+                box(
                   title = "Header data",
+                  width = 12,
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  survey_ui,
-                  width = 12
+                  survey_ui
                 ),
-                boxPlus(
+                box(
                   title = "Interview data",
+                  width = 12,
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  survey_event_ui,
-                  width = 12
+                  survey_event_ui
                 ),
-                boxPlus(
+                box(
                   title = "Fish counts",
+                  width = 12,
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  fish_encounter_ui,
-                  width = 12
+                  fish_encounter_ui
                 ),
-                boxPlus(
+                box(
                   title = "Individual fish",
+                  width = 12,
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  individual_fish_ui,
-                  width = 12
+                  individual_fish_ui
                 )
               )
       ),
@@ -73,14 +76,14 @@ ui = dashboardPagePlus(
               fluidRow(
                 br(),
                 br(),
-                boxPlus(
+                box(
                   title = "Edit sample site info",
+                  width = 12,
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  sample_site_ui,
-                  width = 12
+                  sample_site_ui
                 )
               )
       ),
@@ -88,14 +91,14 @@ ui = dashboardPagePlus(
               fluidRow(
                 br(),
                 br(),
-                boxPlus(
+                box(
                   title = "Sampler info",
+                  width = 12,
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  sampler_ui,
-                  width = 12
+                  sampler_ui
                 )
               )
       ),
@@ -103,14 +106,14 @@ ui = dashboardPagePlus(
               fluidRow(
                 br(),
                 br(),
-                boxPlus(
+                box(
                   title = "Locate surveys",
+                  width = 12,
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  survey_query_ui,
-                  width = 12
+                  survey_query_ui
                 )
               )
       ),
@@ -118,14 +121,14 @@ ui = dashboardPagePlus(
               fluidRow(
                 br(),
                 br(),
-                boxPlus(
+                box(
                   title = "Verify and store login values",
+                  width = 12,
                   closable = FALSE,
                   collapsible = TRUE,
                   solidHeader = FALSE,
                   collapsed = FALSE,
-                  connect_ui,
-                  width = 12
+                  connect_ui
                 )
               )
       ),
