@@ -2,13 +2,11 @@
 # ShinyDashboardPlus header function
 #=============================================================
 
-dash_header = dashboardHeaderPlus(
+dash_header = dashboardHeader(
   fixed = TRUE,
   title = tagList(
     span(class = "logo-lg", "MarSS"),
-    img(src = "ShinyDashboardPlus.svg")),
-  enable_rightsidebar = FALSE,
-  rightSidebarIcon = "bars"
+    img(src = "ShinyDashboardPlus.svg"))
 )
 
 

@@ -4,8 +4,6 @@
 
 dash_leftsidebar = dashboardSidebar(
   width = 175,
-  collapsed = FALSE,
-  div(textOutput("Welcome"), style = "padding: 20px"),
   sidebarMenu(
     id = "tabs",
     menuItem("When and where", tabName = "when_where", icon = icon("globe")),

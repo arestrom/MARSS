@@ -33,7 +33,7 @@
 #  5. Add field to input 2-pole data at interview level?
 #  6. Add field to input descending device data at interview level?
 #
-# AS 2021-04-15
+# AS 2021-04-27
 #==============================================================
 
 # Load libraries
