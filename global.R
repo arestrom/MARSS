@@ -2,8 +2,8 @@
 # Application to edit historical baseline data
 #
 # Notes on install: R 4.0.2
-#  1. Need to update shinydashboardPlus to latest breaking version.
-#     Try on separate machine first, then upgrade here.
+#  1. Update to lastest shinydashboardPlus on R-portable.
+#     Breaking changes in new version have been taken care of below.
 #
 # Notes:
 #  1. Do not use rownames = FALSE in DT. Data will not reload
@@ -29,11 +29,10 @@
 #     inital set of CWT with age data has been added? Can
 #     then join by CWT label. This will handle 'scales taken'
 #     question on paper form.
-#  4. For final version edit to make sure only SS is used...dump ss_test.
-#  5. Add field to input 2-pole data at interview level?
-#  6. Add field to input descending device data at interview level?
+#  4. Add field to input 2-pole data at interview level?
+#  5. Add field to input descending device data at interview level?
 #
-# AS 2021-04-27
+# AS 2021-05-18
 #==============================================================
 
 # Load libraries
@@ -119,12 +118,12 @@ valid_connection = DBI::dbCanConnect(RPostgres::Postgres(),
                                      port = get_credentials("pg_port_prod"),
                                      user = Sys.getenv("USERNAME"),
                                      password = get_credentials("pg_pwd_prod"),
-                                     dbname = get_credentials("pg_sport_test_db"))
+                                     dbname = get_credentials("pg_sport_db"))
 
 # Get pooled connection to AWS prod instance if credentials valid
 if ( valid_connection == TRUE ) {
   pool = pool::dbPool(RPostgres::Postgres(),
-                      dbname = get_credentials("pg_sport_test_db"),
+                      dbname = get_credentials("pg_sport_db"),
                       host = get_credentials("pg_host_prod"),
                       port = get_credentials("pg_port_prod"),
                       user = Sys.getenv("USERNAME"),

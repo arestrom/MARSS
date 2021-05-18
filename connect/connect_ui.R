@@ -36,11 +36,12 @@ connect_ui = tags$div(
                       width = "100%"),
         br(),
         br(),
-        selectizeInput(inputId = "database_name",
+        shinyjs::disabled(
+        textInput(inputId = "database_name",
                   label = tagList(icon("database"), "Database name"),
-                  choices = c("sport_sampling", "ss_test"),
-                  selected = "sport_sampling",
-                  width = "100%"),
+                  value = "sport_sampling",
+                  width = "100%")
+        ),
         br(),
         br(),
         passwordInput(inputId = "database_host",
